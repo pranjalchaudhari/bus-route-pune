@@ -1,0 +1,13 @@
+.map-view{
+    flex: 1;
+}
+.list-view{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.map-list-container{
+    display: flex;
+    height: 80%;
+}

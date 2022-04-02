@@ -1,0 +1,42 @@
+<div class="routes-main-container">
+    <form action="submit">
+        <div class="route-header">
+            <span>FILL ROUTE DETAILS</span><mat-icon inline class="close" mat-dialog-close>close</mat-icon>
+        </div>
+        <div class="field-containers">
+            <mat-form-field appearance="fill" class="fields">
+              <mat-label>Enter Route Name</mat-label>
+              <input matInput placeholder="Route Name" [(ngModel)]="route.name" name="routeName">
+            </mat-form-field>
+        </div>
+        <div class="field-containers">
+            <mat-form-field appearance="fill" class="fields">
+                <mat-label>Choose Direction</mat-label>
+                <mat-select [(ngModel)]="route.direction" name="direction">
+                  <mat-option value="up">Up</mat-option>
+                  <mat-option value="down">Down</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="field-containers">
+            <mat-form-field appearance="fill" class="fields">
+                <mat-label>Select Status</mat-label>
+                <mat-select [(ngModel)]="route.status" name="status">
+                  <mat-option value="active">Active</mat-option>
+                  <mat-option value="inactive">Inactive</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="field-containers">
+            <mat-form-field appearance="fill" class="fields">
+                <mat-label>List of Stops</mat-label>
+                <mat-select [(ngModel)]="selectedStops" multiple name="listOfStops">
+                  <mat-option *ngFor="let stop of stops" [value]="stop.stopId">{{stop.stopName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="field-containers">
+            <button mat-raised-button color="primary" (click)="addRouteDetails()">Add Route Details</button>
+        </div>
+    </form>
+</div>

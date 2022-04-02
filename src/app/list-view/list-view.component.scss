@@ -1,0 +1,26 @@
+.route-list-table{
+    height: auto;
+    width: 100%;
+    margin: 30px;
+}
+.color-green{
+    color: green;
+}
+.color-red{
+    color: red;
+}
+.delete-icon{
+    font-size: 18px !important;
+    color: red;
+    cursor: pointer;
+}
+.edit-icon{
+    font-size: 18px !important;
+    color: purple;
+    margin-left: 25px;
+    cursor: pointer;
+}
+.selection-title{
+    display: flex;
+    justify-content: space-around;
+}

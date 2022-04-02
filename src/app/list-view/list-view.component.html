@@ -1,0 +1,65 @@
+<div  *ngIf="routesData.length">
+  <h3 class="selection-title">Select Route(s) inside table to view it on Map.</h3>
+  <table mat-table [dataSource]="dataSource" class="route-list-table">
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null; allRowsSelected();"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                        [aria-label]="checkboxLabel()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null; rowSelection(row,row.routeId);"
+                        [checked]="selection.isSelected(row)"
+                        [aria-label]="checkboxLabel(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+    
+      <!-- ID Column -->
+      <ng-container matColumnDef="routeId">
+        <th mat-header-cell *matHeaderCellDef> Route ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.routeId}} </td>
+      </ng-container>
+    
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Route Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name | titlecase}} </td>
+      </ng-container>
+    
+      <!-- Direction Column -->
+      <ng-container matColumnDef="direction">
+        <th mat-header-cell *matHeaderCellDef> Direction </th>
+        <td mat-cell *matCellDef="let element"> {{element.direction | titlecase}} </td>
+      </ng-container>
+    
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'color-green': element.status == 'active', 'color-red': element.status == 'inactive'}"> {{element.status | titlecase}} </td>
+      </ng-container>
+      <!-- List of Stops -->
+      <ng-container matColumnDef="listOfStops">
+        <th mat-header-cell *matHeaderCellDef> List Of Stops </th>
+        <td mat-cell *matCellDef="let element"> <span *ngFor="let stop of element.listOfStops; let last = last">{{ stop.stopName | titlecase}}<span *ngIf="!last">&nbsp;-&nbsp;</span></span> </td>
+      </ng-container>
+      <!-- Edit Delete -->
+      <ng-container matColumnDef="editDelete">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element"> <mat-icon class="delete-icon" (click)="$event.stopPropagation();deleteRow(element)" inline>delete</mat-icon>&nbsp;<mat-icon (click)="$event.stopPropagation();editRow(element)" class="edit-icon" inline>edit</mat-icon></td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          (click)="selection.toggle(row)">
+      </tr>
+  </table>
+</div>
+
+<div *ngIf="!routesData.length">
+    Add Routes to see the table.
+</div>

@@ -1,0 +1,22 @@
+.routes-main-container{
+    width: 500px;
+}
+.route-header{
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.close{
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.field-containers{
+    display: flex;
+    justify-content: space-around;
+}
+.fields{
+    width: 80%;
+}
