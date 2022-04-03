@@ -20,6 +20,7 @@ export class RouteFormComponent implements OnInit {
     listOfStops: []
   };
   public stops: Array<IStops> = this.busRoutingService.getBusStopsData();
+  @Input() addUpdateText: string = 'Add';
 
   constructor(private busRoutingService : BusRoutingService) { }
 
@@ -47,6 +48,7 @@ export class RouteFormComponent implements OnInit {
       alert('Select at least 2 stops.');
       return;
     }
+    this.route.listOfStops = [];
     this.route.routeId = this.route.routeId ? this.route.routeId : this.currentRouteId;
     this.selectedStops.map((id:any)=>{
       this.stops.map((stop:IStops)=>{

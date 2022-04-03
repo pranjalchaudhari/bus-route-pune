@@ -12,7 +12,6 @@ import {MatTableDataSource} from '@angular/material/table';
 export class ListViewComponent implements OnInit {
   public routesData!: Array<IRoutes>;
   @Output() selectedRoutes: EventEmitter<Array<IRoutes>>= new EventEmitter();
-  @Output() emitSelectionStatus: EventEmitter<any>= new EventEmitter();
   @Output() deleteRowEvent: EventEmitter<any>= new EventEmitter();
   @Output() editRowEvent: EventEmitter<any>= new EventEmitter();
   displayedColumns: string[] = ['select','routeId', 'name', 'direction', 'status', 'listOfStops','editDelete'];
@@ -54,8 +53,6 @@ export class ListViewComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.routeId! + 1}`;
   }
   public rowSelection(row:any,id: any){
-    console.log(this.selection.isSelected(row),row);
-    this.emitSelectionStatus.emit({'selected':this.selection.isSelected(row), 'row':row});
     this.selectedRoutes.emit(this.selection.selected);
   }
   public allRowsSelected(){
@@ -65,6 +62,7 @@ export class ListViewComponent implements OnInit {
     this.deleteRowEvent.emit(row);
   }
   public editRow(row:any){
+    row.updateId += '1';
     this.editRowEvent.emit(row);
   }
 

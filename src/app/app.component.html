@@ -1,15 +1,10 @@
-<app-header class="header" 
-    (emitDataToAppComponent)="addRoutes($event)" 
-    (updateRowData)="updateRow($event)" 
-    [currentRouteId]="totalRoutes.length + 1" 
-    [updateRouteData]=[updateRouteData]>
+<app-header class="header" (addButtonClicked)="openAddRouteModal()">
 </app-header>
 <div class="map-list-container">
     <app-list-view class="list-view" 
-        (selectedRoutes)="selectedRoutesToDisplay($event)" 
-        (emitSelectionStatus)="emitSelectionStatus($event)"
+        (selectedRoutes)="selectedRoutesToDisplay($event)"
         (deleteRowEvent)="deleteRowEvent($event)"
-        (editRowEvent)="editRowEvent($event)">
+        (editRowEvent)="openEditRouteModal($event)">
     </app-list-view>
-    <app-map-view class="map-view" [selectedRoutes]="selectedRoutes" [selectionStatus]="selectionStatus"></app-map-view>
+    <app-map-view class="map-view" [selectedRoutes]="selectedRoutes"></app-map-view>
 </div>

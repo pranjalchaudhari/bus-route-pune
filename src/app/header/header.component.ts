@@ -2,43 +2,65 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { MatDialog } from '@angular/material/dialog';
 import { IRoutes } from '../interface/bus-routing.interface';
 import { RouteFormComponent } from '../route-form/route-form.component';
+import * as XLSX from 'xlsx';
+import { BusRoutingService } from '../services/bus-route.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit,OnChanges {
-  @Input() updateRouteData: any;
-  @Input() currentRouteId!: number;
-  @Output() emitDataToAppComponent: EventEmitter<IRoutes> = new EventEmitter();
-  @Output() updateRowData: EventEmitter<IRoutes> = new EventEmitter();
-  constructor(public dialog: MatDialog) { }
+export class HeaderComponent implements OnInit {
+  @Output() addButtonClicked: EventEmitter<any> = new EventEmitter();
+  public routeDataToExport: Array<IRoutes> = []
+  public excelExportData: Array<any> = []
+  constructor(
+    public dialog: MatDialog,
+    private busRoutingService : BusRoutingService
+  ) { }
 
   ngOnInit(): void {
+    this.subscribeToRouteData();
   }
-  ngOnChanges(changes: SimpleChanges):void{
-    if(changes && changes.updateRouteData && changes.updateRouteData.currentValue && changes.updateRouteData.currentValue[0] != undefined){
-      this.updateRoute(changes.updateRouteData.currentValue[0]);
+  private subscribeToRouteData(){
+    this.busRoutingService.getRouteState().subscribe((data:Array<IRoutes>)=>{
+      this.routeDataToExport = data;
+    })
+  }
+  public addRoute(){
+    this.addButtonClicked.emit();
+  }
+  public exportData():void{
+    this.excelExportData = [];
+    if(this.routeDataToExport.length == 0){
+      alert('No Data to export. Add routes to export data.');
+      return;
     }
-  }
-  public addRoute(input: string){
-    const dialogRef = this.dialog.open(RouteFormComponent);
-    dialogRef.componentInstance.currentRouteId = this.currentRouteId; 
-    dialogRef.componentInstance.closeDialog.subscribe(()=>{
-      dialogRef.close();
-    })
-    dialogRef.componentInstance.emitRoutData.subscribe((data: IRoutes)=>{
-      this.emitDataToAppComponent.emit(data);
-    })
-  }
-  public updateRoute(data:any){
-    const dialogRef = this.dialog.open(RouteFormComponent);
-    dialogRef.componentInstance.prefillData = data;
-    dialogRef.componentInstance.emitRoutData.subscribe((data: IRoutes)=>{
-      this.updateRowData.emit(data);
-    })
+    for(const route of this.routeDataToExport){
+      let stops = [];
+      for(const stop of route.listOfStops!){
+        stops.push(JSON.stringify(stop));
+      }
+      let exportDataObject = {
+        ID: route.routeId,
+        Name: route.name,
+        Direction: route.direction,
+        Status: route.status,
+        Stops: stops.toString(),
+      };
+      this.excelExportData.push(exportDataObject);
 
+    }
+    const workSheet = XLSX.utils.json_to_sheet(this.excelExportData);
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'data');
+    XLSX.writeFile(workBook, 'routes.xlsx');
   }
+  // public uploadData(){
+  //   var workbook = XLSX.readFile('./src/assets/uploadRoutes.xlsx');
+  //   var sheet_name_list = workbook.SheetNames;
+  //   var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+  //   console.log(xlData);
+  // }
 
 }

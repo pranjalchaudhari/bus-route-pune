@@ -17,10 +17,14 @@
 .edit-icon{
     font-size: 18px !important;
     color: purple;
-    margin-left: 25px;
     cursor: pointer;
 }
 .selection-title{
     display: flex;
     justify-content: space-around;
+}
+.list-main-conntainer{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }

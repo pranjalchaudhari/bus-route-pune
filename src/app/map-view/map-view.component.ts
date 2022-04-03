@@ -11,32 +11,19 @@ import { BusRoutingService } from '../services/bus-route.service';
   styleUrls: ['./map-view.component.scss']
 })
 export class MapViewComponent implements OnInit, OnChanges {
-  private routeAlreadyAddedToMap: Array<any> = [];
-  private routesData: Array<IRoutes> = [];
   @Input() selectedRoutes!: Array<IRoutes>;
-  @Input() selectionStatus: any;
   private map!: L.Map;
   private centroid: L.LatLngExpression = [18.5204, 73.8567]; //Pune
 
 
-  constructor(private busRoutingService : BusRoutingService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.initMap();
-    this.subscribeToRouteData();
   }
   ngOnChanges(changes: SimpleChanges):void{
     if(changes && changes.selectedRoutes && changes.selectedRoutes.currentValue){
       this.addPinsWithRouteToMap(changes.selectedRoutes.currentValue);
     }
-    // if(changes && changes.selectionStatus && changes.selectionStatus.currentValue && !changes.selectionStatus.currentValue.selected){
-    //   this.removeFromMap(changes.selectionStatus.currentValue.row);
-    // }
-  }
-  private subscribeToRouteData(){
-    this.busRoutingService.getRouteState().subscribe((data:Array<IRoutes>)=>{
-      this.routesData = data;
-    });
   }
   
 
@@ -55,10 +42,13 @@ export class MapViewComponent implements OnInit, OnChanges {
   
   }
   private addPinsWithRouteToMap(input: Array<any>){
+    if(this.map){
+      this.map.remove();
+    }
+    this.initMap();
     if(input && input.length){
       input.map((item:any)=>{
-        const isAlreadyAdded = this.routeAlreadyAddedToMap.findIndex((routeId:any)=>{return routeId == item.routeId});
-        if(item.listOfStops.length && isAlreadyAdded == -1){
+        if(item.listOfStops.length){
           item.listOfStops.map((stop:any,index:any)=>{
             if(item.listOfStops[index+1]){
               let startPin: L.LatLngExpression = [parseFloat(item.listOfStops[index].latitude),parseFloat(item.listOfStops[index].longitude)];
@@ -83,42 +73,8 @@ export class MapViewComponent implements OnInit, OnChanges {
               console.log(this.map);
             }
           })
-          this.routeAlreadyAddedToMap.push(item.routeId);
         }
       })
     }
   }
-  // private removeFromMap(removeRoute:any){
-    
-  //   removeRoute.listOfStops.map((stop:any,index:any)=>{
-  //     if(removeRoute.listOfStops[index+1]){
-  //       this.map.eachLayer((layer:any)=>{
-  //         console.log(layer);
-  //         if(layer._layers && layer._layers[Object.keys(layer._layers)[0]]._latlngs){
-  //           for (const indexStr in layer._layers[Object.keys(layer._layers)[0]]._latlngs){
-  //             let index = parseInt(indexStr);
-  //             if(
-  //               layer._layers[Object.keys(layer._layers)[0]]
-  //               && layer._layers[Object.keys(layer._layers)[0]]._latlngs[index+1] 
-  //               && layer._layers[Object.keys(layer._layers)[0]]._latlngs[index].lat == removeRoute.listOfStops[index].latitude 
-  //               && layer._layers[Object.keys(layer._layers)[0]]._latlngs[index].lng == removeRoute.listOfStops[index].longitude
-  //               && layer._layers[Object.keys(layer._layers)[0]]._latlngs[index+1].lat == removeRoute.listOfStops[index+1].latitude 
-  //               && layer._layers[Object.keys(layer._layers)[0]]._latlngs[index+1].lng == removeRoute.listOfStops[index+1].longitude
-  //               ){
-  //                 layer.remove(this.map);
-  //             }
-  //           }
-  //         }
-  //         if(layer._latlng && layer._latlng.lat == removeRoute.listOfStops[index].latitude && layer._latlng.lng == removeRoute.listOfStops[index].longitude){
-  //           layer.remove();
-  //         }
-  //         if(layer._latlng && layer._latlng.lat == removeRoute.listOfStops[index+1].latitude && layer._latlng.lng == removeRoute.listOfStops[index+1].longitude){
-  //           layer.remove();
-  //         }
-  //         return this.map
-  //       })
-  //     }
-  //   })
-
-  // }
 }
